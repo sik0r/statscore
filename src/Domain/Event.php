@@ -17,6 +17,16 @@ class Event implements \JsonSerializable
         $this->data = $data;
     }
 
+    public function matchId(): ?string
+    {
+        return $this->data['match_id'] ?? null;
+    }
+
+    public function teamId(): ?string
+    {
+        return $this->data['team_id'] ?? null;
+    }
+
     public function type(): EventType
     {
         return $this->type;

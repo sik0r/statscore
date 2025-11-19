@@ -30,19 +30,7 @@ final readonly class EventHandler
         $this->eventStorage->save($event);
 
         // todo: dispatch event `event.event.created` and decouple StatisticsManager from EventHandler
-
-        // Update statistics for foul events
-        if ($event->isType(EventType::Foul) || $event->isType(EventType::Goal)) {
-            if (!isset($data['match_id']) || !isset($data['team_id'])) {
-                throw new \InvalidArgumentException(sprintf('match_id and team_id are required for %s events', $event->type()->value));
-            }
-
-            $this->statisticsManager->updateTeamStatistics(
-                $data['match_id'],
-                $data['team_id'],
-                $event->isType(EventType::Foul) ? 'fouls' : 'goals'
-            );
-        }
+        $this->statisticsManager->updateTeamStatistics($event);
 
         return [
             'status' => 'success',
