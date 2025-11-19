@@ -32,7 +32,7 @@ final readonly class EventHandler
         // todo: dispatch event `event.event.created` and decouple StatisticsManager from EventHandler
 
         // Update statistics for foul events
-        if ($event->isType(EventType::Foul)) {
+        if ($event->isType(EventType::Foul) || $event->isType(EventType::Goal)) {
             if (!isset($data['match_id']) || !isset($data['team_id'])) {
                 throw new \InvalidArgumentException('match_id and team_id are required for foul events');
             }
@@ -40,7 +40,7 @@ final readonly class EventHandler
             $this->statisticsManager->updateTeamStatistics(
                 $data['match_id'],
                 $data['team_id'],
-                'fouls'
+                $event->isType(EventType::Foul) ? 'fouls' : 'goals'
             );
         }
 

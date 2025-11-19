@@ -40,20 +40,25 @@ class EventHandlerTest extends TestCase
 
     public function testHandleGoalEvent(): void
     {
-        $handler = new EventHandler(new FileEventStorage($this->testFile), new StatisticsManager(new FileStatisticRepository($this->testStatsFile)));
+        $statisticManager = new StatisticsManager(new FileStatisticRepository($this->testStatsFile));
+        $handler = new EventHandler(new FileEventStorage($this->testFile), $statisticManager);
 
         $eventData = [
             'type' => 'goal',
-            'player' => 'John Doe',
+            'player' => 'Robert Lewandowski',
             'minute' => 23,
             'second' => 34,
+            'match_id' => 'm2',
+            'team_id' => 'fcbarcelona',
         ];
 
         $result = $handler->handleEvent($eventData);
 
+        $teamStats = $statisticManager->getTeamStatistics($eventData['match_id'], $eventData['team_id']);
         $this->assertEquals('success', $result['status']);
         $this->assertInstanceOf(Event::class, $result['event']);
         $this->assertEquals(EventType::Goal, $result['event']->type());
+        $this->assertEquals(1, $teamStats['goals']);
     }
 
     public function testHandleEventWithoutType(): void
@@ -73,7 +78,11 @@ class EventHandlerTest extends TestCase
 
         $eventData = [
             'type' => 'goal',
-            'player' => 'Jane Smith',
+            'player' => 'Jakub Kiwior',
+            'minute' => 23,
+            'second' => 34,
+            'match_id' => 'm2',
+            'team_id' => 'porto',
         ];
 
         $handler->handleEvent($eventData);

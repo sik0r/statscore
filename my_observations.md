@@ -55,6 +55,8 @@ Czy to jest idealny przypadek do event sourcingu? Czy PoC to dobry moment na imp
 W README.md jest informacja o real-time aktualizacjach dla klientów. Czy warto inwestować teraz w WebSocket lub Server Sent Events? 
 Klasyczny polling powinien być wystarczajacy na potrzeby PoC. 
 
+Wprowadzic VO dla matchId, teamId - obecnie to sa stringi i mozna latwo pomyluc kolejnosc argumentow. 
+
 # Architektura rozwiazania
 
 Czy w ramach PoC stosować hexagonal architecture? Czy może wystarczy jak dodam tylko katalog Infrastructure i tam umieszcze implementacje
