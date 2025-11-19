@@ -54,6 +54,45 @@ class EventApiCest
         ]);
     }
 
+    public function testGoalEvent(ApiTester $I)
+    {
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST('/event', [
+            'type' => 'goal',
+            'player' => 'Kevein De Bruyne',
+            'team_id' => 'mancity',
+            'match_id' => 'm1',
+            'minute' => 61,
+            'second' => 37,
+        ]);
+
+        $I->seeResponseCodeIs(201);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'status' => 'success',
+            'message' => 'Event saved successfully',
+        ]);
+        $I->seeResponseJsonMatchesJsonPath('$.event.type', 'goal');
+    }
+
+    public function testGoalEventWithoutRequiredFields(ApiTester $I)
+    {
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST('/event', [
+            'type' => 'goal',
+            'player' => 'Piotr Zielinski',
+            'minute' => 45,
+            'second' => 34,
+            // Missing team_id and match_id
+        ]);
+
+        $I->seeResponseCodeIs(400);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'error' => 'match_id and team_id are required for goal events',
+        ]);
+    }
+
     public function testInvalidJson(ApiTester $I)
     {
         $I->haveHttpHeader('Content-Type', 'application/json');

@@ -38,6 +38,16 @@ class StatisticsApiCest
             'second' => 33,
         ]);
 
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST('/event', [
+            'type' => 'goal',
+            'player' => 'Thierry Henry',
+            'team_id' => 'arsenal',
+            'match_id' => 'm1',
+            'minute' => 79,
+            'second' => 33,
+        ]);
+
         // Now get team statistics
         $I->sendGET('/statistics?match_id=m1&team_id=arsenal');
 
@@ -48,6 +58,7 @@ class StatisticsApiCest
             'team_id' => 'arsenal',
             'statistics' => [
                 'fouls' => 2,
+                'goals' => 1,
             ],
         ]);
     }

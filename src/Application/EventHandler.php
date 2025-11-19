@@ -34,7 +34,7 @@ final readonly class EventHandler
         // Update statistics for foul events
         if ($event->isType(EventType::Foul) || $event->isType(EventType::Goal)) {
             if (!isset($data['match_id']) || !isset($data['team_id'])) {
-                throw new \InvalidArgumentException('match_id and team_id are required for foul events');
+                throw new \InvalidArgumentException(sprintf('match_id and team_id are required for %s events', $event->type()->value));
             }
 
             $this->statisticsManager->updateTeamStatistics(
