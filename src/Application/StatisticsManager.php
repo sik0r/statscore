@@ -14,6 +14,8 @@ final readonly class StatisticsManager
 
     public function updateTeamStatistics(Event $event, int $value = 1): void
     {
+        // todo: add strategy pattern to handle different types of events
+
         if (!$this->isSupported($event)) {
             return;
         }

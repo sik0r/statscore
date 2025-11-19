@@ -78,3 +78,25 @@ Co z eventual consistency - przy EDA jest to naturalne?
 Czy docelowo chcemy implementowac Inbox/Outbox pattern? Rozwiazuje to problemy z podwójnym przetworzeniem eventu lub zapewnia w
 jakimś stopniu gwarancje wysłania wiadomosci, ale wprowadza nam nowe problemy. Czy problemem bedzie waskie gardlo
 cron joba, który by publikowac eventy z outboxa? Czy mozemy tam zastosowac `select ... for update`? 
+
+# Target solution & Questions
+
+Bazujac na doświadczeniu z przetwarzania statystyk (małe doświadczenie, ale jakieś jest :), branża edukacyjna) podszedłbym do tego tak:
+- zapisujmy wszystkie eventy w postaci ogolnej, czyli wszystkie dane zapisuje docelowo pewnie w bazie danych
+- po zapisisaniu emitujemy event, który informuje, że "coś" się stało podczas rozgrywek
+- na event nasłuchuja inne usługi, które specjalizuja sie w tworzeniu szczegółowych statystyk 
+- po zapisaniu szczeglowej statystyki tez jest emitowany event i moze to byc przechwycone przez inne usługi i wyslane za pomoca websocet/sse lub po prostu frontend robi polling po swieze dane
+
+Pisałem tutaj o usługach, ale równie dobrze moze to być modularny monolit. 
+Zamiast komunikacji asynchronicznej poprzez message bus mozemy zastosowac facade pattern i moduly komunikja sie za pomoca wzorca fasady.
+
+W moim rozwiazaniu nie zastosowalem wzorca strategii w EventHandler bo uznalem to za over-engineering na potrzeby PoC.
+Przeniosłem za to logikę obsłgujaca zapis do StatisticsManager.
+
+Został jeszcze do rozwiazania problem walidacji. Docelowo pewnie dane byłyby walidowane w kontrolerze (walidator) - czy np mamy teamId.
+Czy walidacja typu eventu to jest logika biznesowa czy to tylko ograniczenie ze wzgledu na PoC?
+
+Wdrożenie modelu danych dla statystyk. Czy rozne typy statystyk maja rozna strukture danych? 
+
+`All clients receive event notifications` - jacy klienci? To sa aplikacje frontend? Uzywaja pollingu/websockers/sse? Czy klienci to inne microservices?
+A może tutaj trzeba zaimplementować obsługę wysyłania webhooks do wszystkich naszych klientow? - outbox pattern
