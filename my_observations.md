@@ -59,3 +59,7 @@ Klasyczny polling powinien być wystarczajacy na potrzeby PoC.
 
 Czy w ramach PoC stosować hexagonal architecture? Czy może wystarczy jak dodam tylko katalog Infrastructure i tam umieszcze implementacje
 FileStorage? Jest sens dodawać Application i Domain? Nie mam modelu danych pod statystyki - trzeba dodać?
+
+# Code quality
+
+Oczywiscie w ramach CI mozna dodac jeszcze phpstan czy deptract, ale w ramach PoC odpuszczam bo mamy ograniczony czas, dodałem tylko php-cs-fixer wraz z podstawowym CI.

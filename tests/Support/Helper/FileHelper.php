@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Support\Helper;
 
-class FileHelper extends \Codeception\Module
+use Codeception\Module;
+
+class FileHelper extends Module
 {
     public function deleteFile(string $filePath): void
     {

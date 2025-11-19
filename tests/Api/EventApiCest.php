@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Api;
 
 use Tests\Support\ApiTester;
@@ -22,14 +24,14 @@ class EventApiCest
             'team_id' => 'arsenal',
             'match_id' => 'm1',
             'minute' => 45,
-            'second' => 34
+            'second' => 34,
         ]);
-        
+
         $I->seeResponseCodeIs(201);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'status' => 'success',
-            'message' => 'Event saved successfully'
+            'message' => 'Event saved successfully',
         ]);
         $I->seeResponseJsonMatchesJsonPath('$.event.type', 'foul');
     }
@@ -40,15 +42,15 @@ class EventApiCest
         $I->sendPOST('/event', [
             'type' => 'foul',
             'player' => 'William Saliba',
-                'minute' => 45,
-            'second' => 34
+            'minute' => 45,
+            'second' => 34,
             // Missing team_id and match_id
         ]);
-        
+
         $I->seeResponseCodeIs(400);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'error' => 'match_id and team_id are required for foul events'
+            'error' => 'match_id and team_id are required for foul events',
         ]);
     }
 
@@ -56,11 +58,11 @@ class EventApiCest
     {
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST('/event', 'invalid json');
-        
+
         $I->seeResponseCodeIs(400);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'error' => 'Invalid JSON'
+            'error' => 'Invalid JSON',
         ]);
     }
 
@@ -70,13 +72,13 @@ class EventApiCest
         $I->sendPOST('/event', [
             'player' => 'John Doe',
             'minute' => 23,
-            'second' => 34
+            'second' => 34,
         ]);
-        
+
         $I->seeResponseCodeIs(400);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'error' => 'Event type is required'
+            'error' => 'Event type is required',
         ]);
     }
 }

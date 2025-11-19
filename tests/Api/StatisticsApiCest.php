@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Api;
 
 use Tests\Support\ApiTester;
@@ -23,9 +25,9 @@ class StatisticsApiCest
             'team_id' => 'arsenal',
             'match_id' => 'm1',
             'minute' => 15,
-            'second' => 34
+            'second' => 34,
         ]);
-        
+
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST('/event', [
             'type' => 'foul',
@@ -33,20 +35,20 @@ class StatisticsApiCest
             'team_id' => 'arsenal',
             'match_id' => 'm1',
             'minute' => 30,
-            'second' => 33
+            'second' => 33,
         ]);
-        
+
         // Now get team statistics
         $I->sendGET('/statistics?match_id=m1&team_id=arsenal');
-        
+
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'match_id' => 'm1',
             'team_id' => 'arsenal',
             'statistics' => [
-                'fouls' => 2
-            ]
+                'fouls' => 2,
+            ],
         ]);
     }
 
@@ -60,9 +62,9 @@ class StatisticsApiCest
             'team_id' => 'arsenal',
             'match_id' => 'm1',
             'minute' => 15,
-            'second' => 34
+            'second' => 34,
         ]);
-        
+
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST('/event', [
             'type' => 'foul',
@@ -70,60 +72,60 @@ class StatisticsApiCest
             'team_id' => 'liverpool',
             'match_id' => 'm1',
             'minute' => 30,
-            'second' => 33
+            'second' => 33,
         ]);
-        
+
         // Get all match statistics
         $I->sendGET('/statistics?match_id=m1');
-        
+
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'match_id' => 'm1',
             'statistics' => [
                 'arsenal' => [
-                    'fouls' => 1
+                    'fouls' => 1,
                 ],
                 'liverpool' => [
-                    'fouls' => 1
-                ]
-            ]
+                    'fouls' => 1,
+                ],
+            ],
         ]);
     }
 
     public function testGetStatisticsWithoutMatchId(ApiTester $I)
     {
         $I->sendGET('/statistics');
-        
+
         $I->seeResponseCodeIs(400);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'error' => 'match_id is required'
+            'error' => 'match_id is required',
         ]);
     }
 
     public function testGetStatisticsForNonExistentTeam(ApiTester $I)
     {
         $I->sendGET('/statistics?match_id=m1&team_id=nonexistent');
-        
+
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'match_id' => 'm1',
             'team_id' => 'nonexistent',
-            'statistics' => []
+            'statistics' => [],
         ]);
     }
 
     public function testGetStatisticsForNonExistentMatch(ApiTester $I)
     {
         $I->sendGET('/statistics?match_id=nonexistent');
-        
+
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'match_id' => 'nonexistent',
-            'statistics' => []
+            'statistics' => [],
         ]);
     }
 }
