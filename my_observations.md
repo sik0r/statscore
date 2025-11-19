@@ -100,3 +100,12 @@ Wdrożenie modelu danych dla statystyk. Czy rozne typy statystyk maja rozna stru
 
 `All clients receive event notifications` - jacy klienci? To sa aplikacje frontend? Uzywaja pollingu/websockers/sse? Czy klienci to inne microservices?
 A może tutaj trzeba zaimplementować obsługę wysyłania webhooks do wszystkich naszych klientow? - outbox pattern
+
+Brakuje mi implementacji dla `All clients receive event notifications` - tutaj nie wiem dokładnie o jakich klientów chodzi,
+ale jeśli sa to:
+- aplikacje frontend - tutaj moga robić polling, możemy użyć websockets lub sse. Do obsługi websocket lub sse lepiej sprawdzi się usługa napisana w JS/TS, możemy jej dostarczyc dane za pomoca kolejki i eventu
+- inne microservices - publikujemy event na kolejce i zainteresowane usługi ja dostana
+- aplikacje klientów - wysylamy im webhooks - mozemy zastosowac outbox pattern i przy zapisie eventu do bazy dodajemy rownież wpis do tabelki z outbox i pózniej worker obsłguje to i pewnie potrzebuje odczytać konfiguracje dla webhooks i wysłać do odpowiednich aplikacji lub jeszcze raz dodac wpisy do outbox, ale juz jeden wpis dla jednej aplikacji
+
+Co jest wazne przy powiadomieniu aplikacji klientow? W evencie musimy dostarczyć dane z momentu otrzymania requestu z eventem. Czyli nie możemy im wysyłac np matchId i oni maja pobrac sobie dane
+bo te dane moga byc juz inne - w między czasie zosały zaktualizowane. 
