@@ -1,0 +1,41 @@
+###
+POST http://localhost:8000/event
+Accept: application/json
+
+{
+    "type": "foul",
+    "player": "William Saliba",
+    "team_id": "arsenal",
+    "match_id": "m1",
+    "minute": 15,
+    "second": 34
+}
+###
+
+###
+POST http://localhost:8000/event
+Accept: application/json
+
+{
+    "type": "foul",
+    "player": "Gabriel Jesus",
+    "team_id": "arsenal",
+    "match_id": "m1",
+    "minute": 45,
+    "second": 34
+}
+###
+
+###
+GET http://localhost:8000/statistics?match_id=m1
+Accept: application/json
+
+{
+    "type": "goal",
+    "player": "William Saliba",
+    "team_id": "arsenal",
+    "match_id": "m1",
+    "minute": 45,
+    "second": 34
+}
+###

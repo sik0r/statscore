@@ -10,7 +10,8 @@
         "codeception/codeception": "^5.0",
         "codeception/module-phpbrowser": "*",
         "codeception/module-asserts": "*",
-        "codeception/module-rest": "^3.4"
+        "codeception/module-rest": "^3.4",
+        "friendsofphp/php-cs-fixer": "^3.89"
     },
     "autoload": {
         "psr-4": {
@@ -21,5 +22,13 @@
         "psr-4": {
             "Tests\\": "tests/"
         }
-    }
+    },
+  "scripts": {
+    "cs-fix": [
+      "vendor/bin/php-cs-fixer fix --diff"
+    ],
+    "analyze": [
+      "vendor/bin/php-cs-fixer fix --dry-run --diff"
+    ]
+  }
 }
