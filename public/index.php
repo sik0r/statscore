@@ -7,13 +7,14 @@ require_once __DIR__.'/../vendor/autoload.php';
 use App\Application\EventHandler;
 use App\Application\StatisticsManager;
 use App\Infrastructure\FileEventStorage;
+use App\Infrastructure\FileStatisticRepository;
 
 header('Content-Type: application/json');
 
 // Simple routing
 $method = $_SERVER['REQUEST_METHOD'];
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$statsManager = new StatisticsManager(__DIR__.'/../storage/statistics.txt');
+$statsManager = new StatisticsManager(new FileStatisticRepository(__DIR__.'/../storage/statistics.txt'));
 
 if ('POST' === $method && '/event' === $path) {
     $input = file_get_contents('php://input');

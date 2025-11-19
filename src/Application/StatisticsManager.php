@@ -4,27 +4,15 @@ declare(strict_types=1);
 
 namespace App\Application;
 
-class StatisticsManager
+use App\Domain\StatisticRepositoryInterface;
+
+final readonly class StatisticsManager
 {
-    private string $statsFile;
-
-    public function __construct(string $statsFile = '../storage/statistics.txt')
-    {
-        $this->statsFile = $statsFile;
-
-        $directory = dirname($statsFile);
-        if (!is_dir($directory)) {
-            mkdir($directory, 0777, true);
-        }
-    }
+    public function __construct(private StatisticRepositoryInterface $statisticRepository) {}
 
     public function updateTeamStatistics(string $matchId, string $teamId, string $statType, int $value = 1): void
     {
-        $stats = $this->getStatistics();
-
-        if (!isset($stats[$matchId])) {
-            $stats[$matchId] = [];
-        }
+        $stats = $this->statisticRepository->getStatistics();
 
         if (!isset($stats[$matchId][$teamId])) {
             $stats[$matchId][$teamId] = [];
@@ -36,36 +24,20 @@ class StatisticsManager
 
         $stats[$matchId][$teamId][$statType] += $value;
 
-        $this->saveStatistics($stats);
+        $this->statisticRepository->saveStatistics($stats);
     }
 
     public function getTeamStatistics(string $matchId, string $teamId): array
     {
-        $stats = $this->getStatistics();
+        $stats = $this->statisticRepository->getStatistics();
 
         return $stats[$matchId][$teamId] ?? [];
     }
 
     public function getMatchStatistics(string $matchId): array
     {
-        $stats = $this->getStatistics();
+        $stats = $this->statisticRepository->getStatistics();
 
         return $stats[$matchId] ?? [];
-    }
-
-    private function getStatistics(): array
-    {
-        if (!file_exists($this->statsFile)) {
-            return [];
-        }
-
-        $content = file_get_contents($this->statsFile);
-
-        return json_decode($content, true) ?? [];
-    }
-
-    private function saveStatistics(array $stats): void
-    {
-        file_put_contents($this->statsFile, json_encode($stats, JSON_PRETTY_PRINT), LOCK_EX);
     }
 }

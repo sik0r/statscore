@@ -9,6 +9,7 @@ use App\Application\StatisticsManager;
 use App\Domain\Event;
 use App\Domain\EventType;
 use App\Infrastructure\FileEventStorage;
+use App\Infrastructure\FileStatisticRepository;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -39,7 +40,7 @@ class EventHandlerTest extends TestCase
 
     public function testHandleGoalEvent(): void
     {
-        $handler = new EventHandler(new FileEventStorage($this->testFile), new StatisticsManager($this->testStatsFile));
+        $handler = new EventHandler(new FileEventStorage($this->testFile), new StatisticsManager(new FileStatisticRepository($this->testStatsFile)));
 
         $eventData = [
             'type' => 'goal',
@@ -60,7 +61,7 @@ class EventHandlerTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Event type is required');
 
-        $handler = new EventHandler(new FileEventStorage($this->testFile), new StatisticsManager($this->testStatsFile));
+        $handler = new EventHandler(new FileEventStorage($this->testFile), new StatisticsManager(new FileStatisticRepository($this->testStatsFile)));
 
         $handler->handleEvent([]);
     }
@@ -68,7 +69,7 @@ class EventHandlerTest extends TestCase
     public function testEventIsSavedToFile(): void
     {
         $storage = new FileEventStorage($this->testFile);
-        $handler = new EventHandler($storage, new StatisticsManager($this->testStatsFile));
+        $handler = new EventHandler($storage, new StatisticsManager(new FileStatisticRepository($this->testStatsFile)));
 
         $eventData = [
             'type' => 'goal',
@@ -85,7 +86,7 @@ class EventHandlerTest extends TestCase
 
     public function testHandleFoulEventUpdatesStatistics(): void
     {
-        $statisticsManager = new StatisticsManager($this->testStatsFile);
+        $statisticsManager = new StatisticsManager(new FileStatisticRepository($this->testStatsFile));
         $handler = new EventHandler(new FileEventStorage($this->testFile), $statisticsManager);
 
         $eventData = [
@@ -111,7 +112,7 @@ class EventHandlerTest extends TestCase
 
     public function testHandleMultipleFoulEventsIncrementsStatistics(): void
     {
-        $statisticsManager = new StatisticsManager($this->testStatsFile);
+        $statisticsManager = new StatisticsManager(new FileStatisticRepository($this->testStatsFile));
         $handler = new EventHandler(new FileEventStorage($this->testFile), $statisticsManager);
 
         $eventData1 = [
@@ -145,7 +146,7 @@ class EventHandlerTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('match_id and team_id are required for foul events');
 
-        $statisticsManager = new StatisticsManager($this->testStatsFile);
+        $statisticsManager = new StatisticsManager(new FileStatisticRepository($this->testStatsFile));
         $handler = new EventHandler(new FileEventStorage($this->testFile), $statisticsManager);
 
         $eventData = [
