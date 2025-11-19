@@ -13,6 +13,7 @@ header('Content-Type: application/json');
 // Simple routing
 $method = $_SERVER['REQUEST_METHOD'];
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$statsManager = new StatisticsManager(__DIR__.'/../storage/statistics.txt');
 
 if ('POST' === $method && '/event' === $path) {
     $input = file_get_contents('php://input');
@@ -26,7 +27,7 @@ if ('POST' === $method && '/event' === $path) {
     }
 
     $eventStorage = new FileEventStorage(__DIR__.'/../storage/events.txt');
-    $handler = new EventHandler(eventStorage: $eventStorage);
+    $handler = new EventHandler(eventStorage: $eventStorage, statisticsManager: $statsManager);
 
     try {
         $result = $handler->handleEvent($data);
@@ -37,8 +38,6 @@ if ('POST' === $method && '/event' === $path) {
         echo json_encode(['error' => $e->getMessage()]);
     }
 } elseif ('GET' === $method && '/statistics' === $path) {
-    $statsManager = new StatisticsManager(__DIR__.'/../storage/statistics.txt');
-
     $matchId = $_GET['match_id'] ?? null;
     $teamId = $_GET['team_id'] ?? null;
 

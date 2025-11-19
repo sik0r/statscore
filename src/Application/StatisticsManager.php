@@ -4,16 +4,12 @@ declare(strict_types=1);
 
 namespace App\Application;
 
-use App\Infrastructure\FileStorage;
-
 class StatisticsManager
 {
-    private FileStorage $storage;
     private string $statsFile;
 
     public function __construct(string $statsFile = '../storage/statistics.txt')
     {
-        $this->storage = new FileStorage($statsFile);
         $this->statsFile = $statsFile;
 
         $directory = dirname($statsFile);

@@ -10,18 +10,18 @@ use App\Domain\EventType;
 
 final readonly class EventHandler
 {
-    private StatisticsManager $statisticsManager;
-
-    public function __construct(private EventStorageInterface $eventStorage, ?StatisticsManager $statisticsManager = null)
-    {
-        $this->statisticsManager = $statisticsManager ?? new StatisticsManager(__DIR__.'/../../storage/statistics.txt');
-    }
+    public function __construct(
+        private EventStorageInterface $eventStorage,
+        private StatisticsManager $statisticsManager
+    ) {}
 
     /**
      * @return array{status: string, message: string, event: Event} $data
      */
     public function handleEvent(array $data): array
     {
+        // todo: inbox pattern? should we check that the event was processed? skip it for PoC
+
         if (!isset($data['type'])) {
             throw new \InvalidArgumentException('Event type is required');
         }

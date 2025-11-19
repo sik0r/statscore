@@ -39,7 +39,7 @@ class EventHandlerTest extends TestCase
 
     public function testHandleGoalEvent(): void
     {
-        $handler = new EventHandler(new FileEventStorage($this->testFile));
+        $handler = new EventHandler(new FileEventStorage($this->testFile), new StatisticsManager($this->testStatsFile));
 
         $eventData = [
             'type' => 'goal',
@@ -60,7 +60,7 @@ class EventHandlerTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Event type is required');
 
-        $handler = new EventHandler(new FileEventStorage($this->testFile));
+        $handler = new EventHandler(new FileEventStorage($this->testFile), new StatisticsManager($this->testStatsFile));
 
         $handler->handleEvent([]);
     }
@@ -68,7 +68,7 @@ class EventHandlerTest extends TestCase
     public function testEventIsSavedToFile(): void
     {
         $storage = new FileEventStorage($this->testFile);
-        $handler = new EventHandler($storage);
+        $handler = new EventHandler($storage, new StatisticsManager($this->testStatsFile));
 
         $eventData = [
             'type' => 'goal',
