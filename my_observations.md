@@ -65,3 +65,16 @@ FileStorage? Jest sens dodawać Application i Domain? Nie mam modelu danych pod 
 # Code quality
 
 Oczywiscie w ramach CI mozna dodac jeszcze phpstan czy deptract, ale w ramach PoC odpuszczam bo mamy ograniczony czas, dodałem tylko php-cs-fixer wraz z podstawowym CI.
+
+# Architecture
+
+Cechy architektury docelowej jakie zauważyłem na podstawei README:
+- skalowalność - musimy obsługiwać duża liczbe eventow
+- real-time - tutaj sa sprzeczne informacje, trzeba dopytac biznesu czy 5s opoznienia to dalej jest real-time dla nich?
+- spójnosc danych - musimy miec pewnosc, że nie przetworzymy 2x tego samego eventu 
+
+Czy możemy iść w event-driven? Czy opóznienia zwiazane z asynchronicznościa sa krytyczne dla biznesu? 
+Co z eventual consistency - przy EDA jest to naturalne?  
+Czy docelowo chcemy implementowac Inbox/Outbox pattern? Rozwiazuje to problemy z podwójnym przetworzeniem eventu lub zapewnia w
+jakimś stopniu gwarancje wysłania wiadomosci, ale wprowadza nam nowe problemy. Czy problemem bedzie waskie gardlo
+cron joba, który by publikowac eventy z outboxa? Czy mozemy tam zastosowac `select ... for update`? 
